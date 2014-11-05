@@ -31,8 +31,7 @@ test('toJSON', function (t) {
   t.end()
 })
 
-
-test("not serialize old items", function(t) {
+test("do not serialize stale items", function(t) {
   var cache = new LRU({
     max: 5,
     maxAge: 50
@@ -45,6 +44,7 @@ test("not serialize old items", function(t) {
     //expires at 75
     cache.set("b", "B")
     var s = cache.toJSON()
+    t.equal(s.length, 2)
     t.equal(s[0].k, "b")
     t.equal(s[1].k, "a")
   }, 25)
@@ -53,19 +53,155 @@ test("not serialize old items", function(t) {
     //expires at 110
     cache.set("c", "C")
     var s = cache.toJSON()
+    t.equal(s.length, 2)
     t.equal(s[0].k, "c")
     t.equal(s[1].k, "b")
   }, 60)
 
   setTimeout(function () {
     var s = cache.toJSON()
+    t.equal(s.length, 1)
     t.equal(s[0].k, "c")
   }, 90)
 
   setTimeout(function () {
     var s = cache.toJSON()
-    t.deepEqual(s, [])
+    t.equal(s.length, 0)
     t.end()
   }, 155)
 })
+
+
+test("load basic cache", function(t) {
+  var cache = new LRU(),
+      copy = new LRU()
+
+  cache.set("a", "A")
+  cache.set("b", "B")
+
+  copy.load(cache.toJSON())
+  t.deepEquals(cache.dump(), copy.dump())
+
+  t.end()
+})
+
+test("load staled cache", function(t) {
+  var cache = new LRU({maxAge: 50}),
+      copy = new LRU({maxAge: 50}),
+      arr
+
+  //expires at 50
+  cache.set("a", "A")
+  setTimeout(function () {
+    //expires at 80
+    cache.set("b", "B")
+    arr = cache.toJSON()
+    t.equal(arr.length, 2)
+  }, 30)
+
+  setTimeout(function () {
+    copy.load(arr)
+    t.equal(copy.get("a"), undefined)
+    t.equal(copy.get("b"), "B")
+  }, 60)
+
+  setTimeout(function () {
+    t.equal(copy.get("b"), undefined)
+    t.end()
+  }, 90)
+})
+
+test("load to other size cache", function(t) {
+  var cache = new LRU({max: 2}),
+      copy = new LRU({max: 1})
+
+  cache.set("a", "A")
+  cache.set("b", "B")
+
+  copy.load(cache.toJSON())
+  t.equal(copy.get("a"), undefined)
+  t.equal(copy.get("b"), "B")
+
+  //update the last read from original cache
+  cache.get("a")
+  copy.load(cache.toJSON())
+  t.equal(copy.get("a"), "A")
+  t.equal(copy.get("b"), undefined)
+
+  t.end()
+})
+
+
+test("load to other age cache", function(t) {
+  var cache = new LRU({maxAge: 50}),
+      aged = new LRU({maxAge: 100}),
+      simple = new LRU(),
+      arr
+
+  //created at 0
+  //a would be valid till 0 + 100 in aged cache
+  cache.set("a", "A")
+  setTimeout(function () {
+    //created at 30
+    //b would be valid till 30 + 100 in aged cache
+    cache.set("b", "B")
+    arr = cache.toJSON()
+    t.equal(arr.length, 2)
+  }, 30)
+
+  setTimeout(function () {
+    t.equal(cache.get("a"), undefined)
+    t.equal(cache.get("b"), "B")
+
+    aged.load(arr)
+    t.equal(aged.get("a"), "A")
+    t.equal(aged.get("b"), "B")
+
+    simple.load(arr)
+    t.equal(simple.get("a"), "A")
+    t.equal(simple.get("b"), "B")
+  }, 60)
+
+  setTimeout(function () {
+    t.equal(cache.get("a"), undefined)
+    t.equal(cache.get("b"), undefined)
+
+    aged.load(arr)
+    t.equal(aged.get("a"), undefined)
+    t.equal(aged.get("b"), "B")
+
+    simple.load(arr)
+    t.equal(simple.get("a"), "A")
+    t.equal(simple.get("b"), "B")
+  }, 115)
+
+  setTimeout(function () {
+    aged.load(arr)
+    t.equal(aged.get("a"), undefined)
+    t.equal(aged.get("b"), undefined)
+
+    simple.load(arr)
+    t.equal(simple.get("a"), "A")
+    t.equal(simple.get("b"), "B")
+    t.end()
+  }, 150)
+
+})
+
+test('JSON serialization and deserialization', function(t) {
+
+  var cache = new LRU(),
+      copy = new LRU()
+
+  cache.set("a", "A")
+  cache.set("b", "B")
+
+  copy.load(JSON.parse(JSON.stringify(cache)))
+  t.deepEquals(cache.dump(), copy.dump())
+
+  t.end()
+})
+
+
+
 
