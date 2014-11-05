@@ -24,6 +24,19 @@ If you put more stuff in it, then items will fall out.
 If you try to put an oversized thing in it, then it'll fall out right
 away.
 
+You can save the current cache and load its entries in another cache instantiated with other options 
+
+```javascript
+var LRU = require("lru-cache")
+  , fs = require("fs")
+  , cache = LRU( {max: 500, maxAge: 60000})
+  , otherCache = LRU(50) // sets just the max size
+
+cache.set("key", "value")
+fs.writeFileSync("dump.json", JSON.stringify(cache));
+otherCache.load(require("dump.json"));
+```
+
 ## Options
 
 * `max` The maximum size of the cache, checked by applying the length
@@ -95,3 +108,13 @@ away.
 * `values()`
 
     Return an array of the values in the cache.
+
+* `toJSON()`
+
+    Return an array of the cache entries ready for serialization.
+
+* `load(cacheEntriesArray)`
+
+    Loads another cache entries array, obtained with `sourceCache.toJSON()`, into the cache. The destination cache
+    is reset before loading the new entries
+
