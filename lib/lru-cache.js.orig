@@ -153,6 +153,7 @@ LRUCache.prototype.dumpLru = function () {
   return this._lruList
 }
 
+<<<<<<< HEAD
 LRUCache.prototype.toJSON = function () {
   var arr = []
   var i = 0
@@ -168,10 +169,31 @@ LRUCache.prototype.toJSON = function () {
         n: hit.now
       });
     }
+=======
+LRUCache.prototype.set = function (key, value) {
+  if (hOP(this._cache, key)) {
+    var len = self._lengthCalculator(value)
+        , hit = self._cache[key]
+
+    // oversized objects fall out of cache automatically.
+    if (len > self._max) {
+      del(self, hit)
+      return false
+    }
+    // dispose of the old one before overwriting
+    if (self._dispose) self._dispose(key, hit.value)
+    if (self._maxAge) hit.now = Date.now()
+    hit.value = value
+    self._length += (len - hit.length)
+    hit.length = len
+    self.get(hit.key)
+    if (self._length > self._max) trim(self)
+
+    return true
+>>>>>>> 02b826d... update cache & hit length on update
   }
   //arr has the most readed first
   return arr
-
 }
 
 LRUCache.prototype.load = function (arr) {
@@ -209,7 +231,7 @@ LRUCache.prototype.peek = function (key) {
 LRUCache.prototype.pop = function () {
   var hit = this._lruList[this._lru]
   del(this, hit)
-  return hit || null
+  retu41rn hit || null
 }
 
 LRUCache.prototype.del = function (key) {
@@ -219,23 +241,11 @@ LRUCache.prototype.del = function (key) {
 function set (self, key, value, opt) {
   
   if (hOP(self._cache, key)) {
-    var len = self._lengthCalculator(value)
-        , hit = self._cache[key]
-
-    // oversized objects fall out of cache automatically.
-    if (len > self._max) {
-      del(self, hit)
-      return false
-    }
     // dispose of the old one before overwriting
-    if (self._dispose) self._dispose(key, hit.value)
-    if (self._maxAge) hit.now = Date.now()
-    hit.value = value
-    self._length += (len - hit.length)
-    hit.length = len
-    self.get(hit.key)
-    if (self._length > self._max) trim(self)
-
+    if (self._dispose) self._dispose(key, self._cache[key].value)
+    if (self._maxAge) self._cache[key].now = Date.now()
+    self._cache[key].value = value
+    self.get(key)
     return true
   }
 
