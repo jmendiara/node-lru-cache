@@ -1,6 +1,6 @@
 {
   "name": "lru-cache",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "homepage": "https://github.com/jmendiara/node-lru-cache",
   "description": "A cache object that deletes the least-recently-used items.",
   "main": "lib/lru-cache.js",
