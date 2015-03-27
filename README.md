@@ -1,6 +1,32 @@
-# lru cache
+# serialized lru cache
 
-A cache object that deletes the least-recently-used items.
+A cache object that deletes the least-recently-used items, with serialization support.
+
+This is a fork of the wonderful [@isaacs](https://github.com/isaacs) [node-lru-cache](https://github.com/isaacs/node-lru-cache) with several improvements
+ * [Serialization support](https://github.com/isaacs/node-lru-cache/pull/40)
+ * [Bug](https://github.com/isaacs/node-lru-cache/issues/41) [fixes](https://github.com/isaacs/node-lru-cache/issues/33)
+ * Bower support
+
+## Install
+Get it from [npm](https://www.npmjs.com/)
+```sh
+npm install serialized-lru-cache
+```
+```js
+var LRUCache = require("lru-cache");
+var cache = LRUCache(options);
+```
+
+or from [bower](http://bower.io/)
+```sh
+bower install serialized-lru-cache
+```
+```html
+<script type="text/javascript" src="bower_components/serialized-lru-cache/lib/lru-cache.js"></script>
+<script type="text/javascript">
+  var cache = window.LRUCache(options);
+</script>
+```
 
 ## Usage:
 

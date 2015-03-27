@@ -1,19 +1,19 @@
 {
-  "name": "lru-cache",
-  "description": "A cache object that deletes the least-recently-used items.",
-  "version": "3.0.3",
+  "name": "serialized-lru-cache",
+  "description": "A cache object that deletes the least-recently-used items, with serialization support",
+  "version": "3.1.0",
   "author": "Isaac Z. Schlueter <i@izs.me>",
   "scripts": {
     "test": "tap test --gc"
   },
   "main": "lib/lru-cache.js",
-  "repository": "git://github.com/jmendiara/node-lru-cache.git",
+  "repository": "git://github.com/jmendiara/serialized-lru-cache.git",
   "devDependencies": {
     "tap": "",
     "weak": ""
   },
   "license": {
     "type": "MIT",
-    "url": "http://github.com/jmendiara/node-lru-cache/raw/master/LICENSE"
+    "url": "http://github.com/jmendiara/serialized-lru-cache/raw/master/LICENSE"
   }
 }
