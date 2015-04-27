@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>serialized-lru-cache by jmendiara</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">serialized-lru-cache</h1>
+      <h2 class="project-tagline">A cache object that deletes the least-recently-used items, with serialization support.</h2>
+      <a href="https://github.com/jmendiara/serialized-lru-cache" class="btn">View on GitHub</a>
+      <a href="https://github.com/jmendiara/serialized-lru-cache/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/jmendiara/serialized-lru-cache/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="serialized-lru-cache" class="anchor" href="#serialized-lru-cache" aria-hidden="true"><span class="octicon octicon-link"></span></a>serialized lru cache</h1>
+
+<p>A cache object that deletes the least-recently-used items, with serialization support.</p>
+
+<p>This is a fork of the wonderful <a href="https://github.com/isaacs">@isaacs</a> <a href="https://github.com/isaacs/node-lru-cache">node-lru-cache</a> with several improvements</p>
+
+<ul>
+<li><a href="https://github.com/isaacs/node-lru-cache/pull/40">Serialization support</a></li>
+<li>
+<a href="https://github.com/isaacs/node-lru-cache/issues/41">Bug</a> <a href="https://github.com/isaacs/node-lru-cache/issues/33">fixes</a>
+</li>
+<li>Bower support</li>
+</ul>
+
+<h2>
+<a id="install" class="anchor" href="#install" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install</h2>
+
+<p>Get it from <a href="https://www.npmjs.com/">npm</a></p>
+
+<div class="highlight highlight-sh"><pre>npm install serialized-lru-cache</pre></div>
+
+<div class="highlight highlight-js"><pre><span class="pl-k">var</span> LRUCache <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">"</span>lru-cache<span class="pl-pds">"</span></span>);
+<span class="pl-k">var</span> cache <span class="pl-k">=</span> LRUCache(options);</pre></div>
+
+<p>or from <a href="http://bower.io/">bower</a></p>
+
+<div class="highlight highlight-sh"><pre>bower install serialized-lru-cache</pre></div>
+
+<div class="highlight highlight-html"><pre>&lt;<span class="pl-ent">script</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>text/javascript<span class="pl-pds">"</span></span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>bower_components/serialized-lru-cache/lib/lru-cache.js<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">script</span>&gt;
+<span class="pl-s1">&lt;<span class="pl-ent">script</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>text/javascript<span class="pl-pds">"</span></span>&gt;</span>
+<span class="pl-s1">  <span class="pl-k">var</span> cache <span class="pl-k">=</span> <span class="pl-c1">window</span>.LRUCache(options);</span>
+<span class="pl-s1">&lt;/<span class="pl-ent">script</span>&gt;</span></pre></div>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage:</h2>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> LRU <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">"</span>lru-cache<span class="pl-pds">"</span></span>)
+  , options <span class="pl-k">=</span> { max<span class="pl-k">:</span> <span class="pl-c1">500</span>
+              , <span class="pl-en">length</span>: <span class="pl-k">function</span> (<span class="pl-smi">n</span>, <span class="pl-smi">key</span>) { <span class="pl-k">return</span> n.<span class="pl-c1">length</span> <span class="pl-k">*</span> <span class="pl-c1">2</span> <span class="pl-k">+</span> key.<span class="pl-c1">length</span> }
+              , <span class="pl-en">dispose</span>: <span class="pl-k">function</span> (<span class="pl-smi">key</span>, <span class="pl-smi">n</span>) { n.<span class="pl-c1">close</span>() }
+              , maxAge<span class="pl-k">:</span> <span class="pl-c1">1000</span> <span class="pl-k">*</span> <span class="pl-c1">60</span> <span class="pl-k">*</span> <span class="pl-c1">60</span> }
+  , cache <span class="pl-k">=</span> LRU(options)
+  , otherCache <span class="pl-k">=</span> LRU(<span class="pl-c1">50</span>) <span class="pl-c">// sets just the max size</span>
+
+cache.set(<span class="pl-s"><span class="pl-pds">"</span>key<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>value<span class="pl-pds">"</span></span>)
+cache.get(<span class="pl-s"><span class="pl-pds">"</span>key<span class="pl-pds">"</span></span>) <span class="pl-c">// "value"</span>
+
+cache.<span class="pl-c1">reset</span>()    <span class="pl-c">// empty the cache</span></pre></div>
+
+<p>If you put more stuff in it, then items will fall out.</p>
+
+<p>If you try to put an oversized thing in it, then it'll fall out right
+away.</p>
+
+<p>You can save the current cache and load its entries in another cache instantiated with other options </p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> LRU <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">"</span>lru-cache<span class="pl-pds">"</span></span>)
+  , fs <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">"</span>fs<span class="pl-pds">"</span></span>)
+  , cache <span class="pl-k">=</span> LRU( {max<span class="pl-k">:</span> <span class="pl-c1">500</span>, maxAge<span class="pl-k">:</span> <span class="pl-c1">60000</span>})
+  , otherCache <span class="pl-k">=</span> LRU(<span class="pl-c1">50</span>) <span class="pl-c">// sets just the max size</span>
+
+cache.set(<span class="pl-s"><span class="pl-pds">"</span>key<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>value<span class="pl-pds">"</span></span>)
+fs.writeFileSync(<span class="pl-s"><span class="pl-pds">"</span>dump.json<span class="pl-pds">"</span></span>, JSON.stringify(cache));
+otherCache.<span class="pl-c1">load</span>(<span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">"</span>dump.json<span class="pl-pds">"</span></span>));</pre></div>
+
+<h2>
+<a id="options" class="anchor" href="#options" aria-hidden="true"><span class="octicon octicon-link"></span></a>Options</h2>
+
+<ul>
+<li>
+<code>max</code> The maximum size of the cache, checked by applying the length
+function to all values in the cache.  Not setting this is kind of
+silly, since that's the whole purpose of this lib, but it defaults
+to <code>Infinity</code>.</li>
+<li>
+<code>maxAge</code> Maximum age in ms.  Items are not pro-actively pruned out
+as they age, but if you try to get an item that is too old, it'll
+drop it and return undefined instead of giving it to you.</li>
+<li>
+<code>length</code> Function that is used to calculate the length of stored
+items.  If you're storing strings or buffers, then you probably want
+to do something like <code>function(v, k){return v.length}</code>.  The default is
+<code>function(n){return 1}</code>, which is fine if you want to store <code>n</code>
+like-sized things.</li>
+<li>
+<code>dispose</code> Function that is called on items when they are dropped
+from the cache.  This can be handy if you want to close file
+descriptors or do other cleanup tasks when items are no longer
+accessible.  Called with <code>key, value</code>.  It's called <em>before</em>
+actually removing the item from the internal cache, so if you want
+to immediately put it back in, you'll have to do that in a
+<code>nextTick</code> or <code>setTimeout</code> callback or it won't do anything.</li>
+<li>
+<code>stale</code> By default, if you set a <code>maxAge</code>, it'll only actually pull
+stale items out of the cache when you <code>get(key)</code>.  (That is, it's
+not pre-emptively doing a <code>setTimeout</code> or anything.)  If you set
+<code>stale:true</code>, it'll return the stale value before deleting it.  If
+you don't set this, then it'll return <code>undefined</code> when you try to
+get a stale entry, as if it had already been deleted.</li>
+</ul>
+
+<h2>
+<a id="api" class="anchor" href="#api" aria-hidden="true"><span class="octicon octicon-link"></span></a>API</h2>
+
+<ul>
+<li><code>set(key, value)</code></li>
+<li>
+<p><code>get(key) =&gt; value</code></p>
+
+<p>Both of these will update the "recently used"-ness of the key.
+They do what you think.</p>
+</li>
+<li>
+<p><code>peek(key)</code></p>
+
+<p>Returns the key value (or <code>undefined</code> if not found) without
+updating the "recently used"-ness of the key.</p>
+
+<p>(If you find yourself using this a lot, you <em>might</em> be using the
+wrong sort of data structure, but there are some use cases where
+it's handy.)</p>
+</li>
+<li>
+<p><code>del(key)</code></p>
+
+<p>Deletes a key out of the cache.</p>
+</li>
+<li>
+<p><code>reset()</code></p>
+
+<p>Clear the cache entirely, throwing away all values.</p>
+</li>
+<li>
+<p><code>has(key)</code></p>
+
+<p>Check if a key is in the cache, without updating the recent-ness
+or deleting it for being stale.</p>
+</li>
+<li>
+<p><code>forEach(function(value,key,cache), [thisp])</code></p>
+
+<p>Just like <code>Array.prototype.forEach</code>.  Iterates over all the keys
+in the cache, in order of recent-ness.  (Ie, more recently used
+items are iterated over first.)</p>
+</li>
+<li>
+<p><code>keys()</code></p>
+
+<p>Return an array of the keys in the cache.</p>
+</li>
+<li>
+<p><code>values()</code></p>
+
+<p>Return an array of the values in the cache.</p>
+</li>
+<li>
+<p><code>toJSON()</code></p>
+
+<p>Return an array of the cache entries ready for serialization.</p>
+</li>
+<li>
+<p><code>load(cacheEntriesArray)</code></p>
+
+<p>Loads another cache entries array, obtained with <code>sourceCache.toJSON()</code>, into the cache. The destination cache
+is reset before loading the new entries</p>
+</li>
+</ul>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/jmendiara/serialized-lru-cache">serialized-lru-cache</a> is maintained by <a href="https://github.com/jmendiara">jmendiara</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
