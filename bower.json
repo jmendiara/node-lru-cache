@@ -9,10 +9,7 @@
       "lru cache",
       "serialized"
   ],
-  "license": {
-    "type": "MIT",
-    "url": "http://github.com/jmendiara/serialized-lru-cache/raw/master/LICENSE"
-  },
+  "license": "MIT",
   "ignore": [
     "node_modules",
     "test",
